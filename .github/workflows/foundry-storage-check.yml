@@ -28,7 +28,10 @@ jobs:
           version: nightly
 
       - id: set-matrix
-        run: echo "::set-output name=matrix::$(forge tree | grep -E "^contracts" | cut -d' ' -f1 | xargs basename -s | cut -d'.' -f1)"
+        run: |
+          forge tree
+          echo "contracts"
+          echo "::set-output name=matrix::$(forge tree | grep -E "^contracts" | cut -d' ' -f1 | xargs basename -s | cut -d'.' -f1)"
 
     outputs:
       matrix: ${{ steps.set-matrix.outputs.matrix }}
