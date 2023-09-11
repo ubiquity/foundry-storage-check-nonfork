@@ -14,7 +14,7 @@ on:
     # - .github/workflows/foundry-storage-check.yml
 
 jobs:
-  check_storage_layout:
+  provide_contracts:
     runs-on: ubuntu-latest
 
     steps:
@@ -27,7 +27,29 @@ jobs:
         with:
           version: nightly
 
-      - name: Check storage layout
-        uses: Rubilmax/foundry-storage-check@main
+      - id: set-matrix
+        run: echo "::set-output name=matrix::$(forge tree | grep -E "^contracts" | cut -d' ' -f1 | xargs basename -s | cut -d'.' -f1)"
+
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+
+  check_storage_layout:
+    needs: provide_contracts
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        contract: ${{ fromJson(needs.provide_contracts.outputs.matrix) }}
+
+    steps:
+      - uses: actions/checkout@v3
         with:
-          contract: contracts/Example.sol:Example
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: onbjerg/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Install storage layout
+        uses: Rubilmax/foundry-storage-check@main
