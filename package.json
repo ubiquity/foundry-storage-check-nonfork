@@ -1,11 +1,16 @@
 {
   "name": "foundry-storage-check",
   "version": "3.6.0",
-  "description": "Github Action checking the storage layout diff from Foundry storage layout reports",
+  "description": "A fork of Rubilmax's Github Action checking the storage layout diff from Foundry storage layout reports for multiple contracts e.g. Diamond facets",
   "author": {
     "name": "Romain (Rubilmax) Milon",
     "email": "rmilon@gmail.com",
     "url": "https://github.com/rubilmax"
+  },
+  "maintainer": {
+    "name": "Gitcoindev (Korrrba)",
+    "email": "gitcoiner@gmail.com",
+    "url": "https://github.com/gitcoindev"
   },
   "license": "UNLICENSED",
   "main": "lib/index.js",
@@ -22,12 +27,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Rubilmax/foundry-storage-check.git"
+    "url": "git+https://github.com/gitcoindev/foundry-storage-check.git"
   },
   "bugs": {
-    "url": "https://github.com/Rubilmax/foundry-storage-check/issues"
+    "url": "https://github.com/gitcoindev/foundry-storage-check/issues"
   },
-  "homepage": "https://github.com/Rubilmax/foundry-storage-check#readme",
+  "homepage": "https://github.com/gitcoindev/foundry-storage-check#readme",
   "keywords": [
     "foundry",
     "forge",
