@@ -146,6 +146,28 @@ describe("Storage layout checks", () => {
     });
   });
 
+  describe("Diamond storage", () => {
+    const srcLayout = parseLayout(
+      createLayout("tests/mocks/diamond/DiamondStorageRef.sol:DiamondStorage")
+    );
+
+    it("should not raise diff when changing name of struct", async () => {
+      const contract = "tests/mocks/diamond/DiamondStorageRenamed.sol:DiamondStorage";
+      const cmpLayout = parseLayout(createLayout(contract));
+
+      const diffs = await checkLayouts(srcLayout, cmpLayout);
+      expect(diffs).toHaveLength(0);
+    });
+
+    it("should not raise diff when extending struct", async () => {
+      const contract = "tests/mocks/diamond/DiamondStorageExtended.sol:DiamondStorage";
+      const cmpLayout = parseLayout(createLayout(contract));
+
+      const diffs = await checkLayouts(srcLayout, cmpLayout);
+      expect(diffs).toHaveLength(0);
+    });
+  });
+
   describe("Mapping storage", () => {
     const srcLayout = parseLayout(
       createLayout("tests/mocks/mapping/StorageMappingRef.sol:Storage")

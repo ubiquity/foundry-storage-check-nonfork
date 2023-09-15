@@ -19,10 +19,6 @@ inputs:
     description: Whether to fail the CI when removing a storage slot (to only allow added or renamed storage slots).
     required: false
     default: false
-  diamondStorage:
-    description: Whether to parse the contract or library in Diamond Storage mode.
-    required: false
-    default: false
   token:
     description: The repository's github token.
     default: ${{ github.token }}
