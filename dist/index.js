@@ -535,10 +535,64 @@ const exactify = (variable) => ({
     offset: BigInt(variable.offset),
 });
 const createLayout = (contract, cwd = ".") => {
-    return (0, child_process_1.execSync)((0, shell_quote_1.quote)(["forge", "inspect", contract, "storage-layout"]), {
+    const [path, contractName] = contract.split(":");
+    const { children, tokens = [] } = parser.parse(fs_1.default.readFileSync(path, { encoding: "utf-8" }), {
+        tolerant: true,
+        tokens: true,
+        loc: true,
+    });
+    // check if contract is a diamond library, otherwise return default storage layout
+    const def = children.find((child) => child.type === "ContractDefinition" && child.name === contractName);
+    if (def) {
+        // find all functions in the contract
+        const contractFunctions = def.subNodes.filter((child) => child.type === "FunctionDefinition");
+        // find all structs in the contract
+        const contractStructs = def.subNodes.filter((child) => child.type === "StructDefinition");
+        // has diamond storage if there is a function that returns a pointer to storage struct
+        const hasDiamondStorage = contractFunctions.find((f) => f.returnParameters && f.returnParameters[0].storageLocation === "storage");
+        if (hasDiamondStorage && hasDiamondStorage.returnParameters) {
+            const diamondStruct = hasDiamondStorage.returnParameters[0];
+            if (diamondStruct.typeName) {
+                const v = diamondStruct.typeName;
+                const diamondStorageStructName = v.namePath;
+                // find the diamond storage struct
+                const diamondStorageStruct = contractStructs.find((s) => s.name === diamondStorageStructName);
+                // create storage layout from AST and return
+                let diamondStorageLayout = {
+                    storage: [],
+                    types: {}
+                };
+                if (diamondStorageStruct) {
+                    let slot = 0;
+                    diamondStorageStruct.members.forEach(function (v) {
+                        const member = {
+                            astId: 0,
+                            contract: contract,
+                            label: v.name || "",
+                            offset: 0,
+                            slot: String(slot),
+                            type: (v.typeName).name
+                        };
+                        diamondStorageLayout.storage.push(member);
+                        const memberType = {
+                            encoding: "inplace",
+                            label: member.type,
+                            numberOfBytes: "1"
+                        };
+                        diamondStorageLayout.types[member.type] = memberType;
+                        slot++;
+                    });
+                    return JSON.stringify(diamondStorageLayout);
+                }
+            }
+        }
+    }
+    ;
+    const sl = (0, child_process_1.execSync)((0, shell_quote_1.quote)(["forge", "inspect", contract, "storage-layout"]), {
         encoding: "utf-8",
         cwd,
     });
+    return sl;
 };
 exports.createLayout = createLayout;
 const parseLayout = (content) => {
