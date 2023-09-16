@@ -8,6 +8,7 @@ import {
   ContractDefinition,
   ElementaryTypeName,
   FunctionDefinition,
+  Mapping,
   StructDefinition,
   UserDefinedTypeName,
   VariableDeclaration,
@@ -83,7 +84,7 @@ export const createLayout = (contract: string, cwd = ".") => {
               label: v.name || "",
               offset: 0,
               slot: String(slot),
-              type: (<ElementaryTypeName>(v.typeName)).name || (<UserDefinedTypeName>(v.typeName)).namePath
+              type: (<ElementaryTypeName>(v.typeName)).name || (<UserDefinedTypeName>(v.typeName)).namePath || (<Mapping>(v.typeName)).type
             };
             diamondStorageLayout.storage.push(member);
             const memberType: StorageVariableType = {
