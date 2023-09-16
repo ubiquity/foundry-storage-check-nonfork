@@ -83,7 +83,7 @@ export const createLayout = (contract: string, cwd = ".") => {
               label: v.name || "",
               offset: 0,
               slot: String(slot),
-              type: (<ElementaryTypeName>(v.typeName)).name
+              type: (<ElementaryTypeName>(v.typeName)).name || (<UserDefinedTypeName>(v.typeName)).namePath
             };
             diamondStorageLayout.storage.push(member);
             const memberType: StorageVariableType = {

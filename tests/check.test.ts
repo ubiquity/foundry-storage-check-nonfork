@@ -196,6 +196,24 @@ describe("Storage layout checks", () => {
         'variable \"e\" of type \"address\" was replaced by variable \"d\" of type \"uint32\" (storage slot 0x0000000000000000000000000000000000000000000000000000000000000004, byte #0)'
       );
     });
+
+    it("should raise label diff when inserting custom type struct variables", async () => {
+      const contract = "tests/mocks/diamond/DiamondStorageCustomType.sol:DiamondStorage";
+      const cmpDef = parseSource(contract);
+      const cmpLayout = parseLayout(createLayout(contract));
+
+      const diffs = await checkLayouts(srcLayout, cmpLayout);
+      expect(diffs).toHaveLength(3);
+      expect(formatDiff(cmpDef, diffs[0]).message).toEqual(
+        'variable \"c\" of type \"uint32\" was replaced by variable \"token\" of type \"Types.TokenType\" (storage slot 0x0000000000000000000000000000000000000000000000000000000000000002, byte #0)'
+      );
+      expect(formatDiff(cmpDef, diffs[1]).message).toEqual(
+        'variable \"d\" was renamed to \"c\". Is it intentional? (storage slot 0x0000000000000000000000000000000000000000000000000000000000000003, byte #0)'
+      );
+      expect(formatDiff(cmpDef, diffs[2]).message).toEqual(
+        'variable \"e\" of type \"address\" was replaced by variable \"d\" of type \"uint32\" (storage slot 0x0000000000000000000000000000000000000000000000000000000000000004, byte #0)'
+      );
+    });
   });
 
   describe("Mapping storage", () => {
