@@ -527,6 +527,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.parseSource = exports.parseLayout = exports.createLayout = void 0;
 const child_process_1 = __nccwpck_require__(2081);
 const fs_1 = __importDefault(__nccwpck_require__(7147));
+const path_1 = __importDefault(__nccwpck_require__(1017));
 const shell_quote_1 = __nccwpck_require__(7029);
 const parser = __importStar(__nccwpck_require__(4834));
 const exactify = (variable) => ({
@@ -535,8 +536,8 @@ const exactify = (variable) => ({
     offset: BigInt(variable.offset),
 });
 const createLayout = (contract, cwd = ".") => {
-    const [path, contractName] = contract.split(":");
-    const { children, tokens = [] } = parser.parse(fs_1.default.readFileSync(path, { encoding: "utf-8" }), {
+    const [contractPath, contractName] = contract.split(":");
+    const { children, tokens = [] } = parser.parse(fs_1.default.readFileSync(path_1.default.join(cwd, contractPath), { encoding: "utf-8" }), {
         tolerant: true,
         tokens: true,
         loc: true,
@@ -558,10 +559,7 @@ const createLayout = (contract, cwd = ".") => {
                 // find the diamond storage struct
                 const diamondStorageStruct = contractStructs.find((s) => s.name === diamondStorageStructName);
                 // create storage layout from AST and return
-                let diamondStorageLayout = {
-                    storage: [],
-                    types: {}
-                };
+                let diamondStorageLayout = { storage: [], types: {} };
                 if (diamondStorageStruct) {
                     let slot = 0;
                     diamondStorageStruct.members.forEach(function (v) {
