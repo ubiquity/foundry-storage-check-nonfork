@@ -569,7 +569,7 @@ const createLayout = (contract, cwd = ".") => {
                             label: v.name || "",
                             offset: 0,
                             slot: String(slot),
-                            type: (v.typeName).name
+                            type: (v.typeName).name || (v.typeName).namePath
                         };
                         diamondStorageLayout.storage.push(member);
                         const memberType = {

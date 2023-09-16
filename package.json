@@ -1,6 +1,6 @@
 {
   "name": "foundry-storage-check",
-  "version": "3.6.0",
+  "version": "3.6.1",
   "description": "A fork of Rubilmax's Github Action checking the storage layout diff from Foundry storage layout reports for multiple contracts e.g. Diamond facets",
   "author": {
     "name": "Romain (Rubilmax) Milon",
