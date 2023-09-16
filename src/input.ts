@@ -1,5 +1,6 @@
 import { execSync } from "child_process";
 import fs from "fs";
+import path from "path";
 import { quote } from "shell-quote";
 
 import * as parser from "@solidity-parser/parser";
@@ -8,7 +9,6 @@ import {
   ElementaryTypeName,
   FunctionDefinition,
   StructDefinition,
-  TypeName,
   UserDefinedTypeName,
   VariableDeclaration,
 } from "@solidity-parser/parser/src/ast-types";
@@ -29,9 +29,9 @@ const exactify = (variable: StorageVariable): StorageVariableExact => ({
 });
 
 export const createLayout = (contract: string, cwd = ".") => {
-  const [path, contractName] = contract.split(":");
+  const [contractPath, contractName] = contract.split(":");
 
-  const { children, tokens = [] } = parser.parse(fs.readFileSync(path, { encoding: "utf-8" }), {
+  const { children, tokens = [] } = parser.parse(fs.readFileSync(path.join(cwd, contractPath), { encoding: "utf-8" }), {
     tolerant: true,
     tokens: true,
     loc: true,
@@ -71,10 +71,7 @@ export const createLayout = (contract: string, cwd = ".") => {
         );
 
         // create storage layout from AST and return
-        let diamondStorageLayout : StorageLayoutReport = {
-          storage: [],
-          types: {}
-        };
+        let diamondStorageLayout : StorageLayoutReport = {storage: [], types: {}};
 
         if (diamondStorageStruct) {
           let slot = 0;
