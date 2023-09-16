@@ -166,6 +166,18 @@ describe("Storage layout checks", () => {
       const diffs = await checkLayouts(srcLayout, cmpLayout);
       expect(diffs).toHaveLength(0);
     });
+
+    it("should raise type diff when changing type of variable", async () => {
+      const contract = "tests/mocks/diamond/DiamondStorageChanged.sol:DiamondStorage";
+      const cmpDef = parseSource(contract);
+      const cmpLayout = parseLayout(createLayout(contract));
+
+      const diffs = await checkLayouts(srcLayout, cmpLayout);
+      expect(diffs).toHaveLength(1);
+      expect(formatDiff(cmpDef, diffs[0]).message).toEqual(
+        'variable "c" was of type "uint32" but is now "uint256" (storage slot 0x0000000000000000000000000000000000000000000000000000000000000002, byte #0)'
+      );
+    });
   });
 
   describe("Mapping storage", () => {
