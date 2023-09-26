@@ -372,6 +372,7 @@ const contract = core.getInput("contract");
 const address = core.getInput("address");
 const rpcUrl = core.getInput("rpcUrl");
 const failOnRemoval = core.getInput("failOnRemoval") === "true";
+const failOnLabelDiff = core.getInput("failOnLabelDiff") === "true";
 const workingDirectory = core.getInput("workingDirectory");
 const contractAbs = (0, path_1.join)(workingDirectory, contract);
 const contractEscaped = contractAbs.replace(/\//g, "_").replace(/:/g, "-");
@@ -469,6 +470,9 @@ async function _run() {
         if (formattedDiffs.filter((diff) => format_1.diffLevels[diff.type] === "error").length > 0 ||
             (failOnRemoval &&
                 formattedDiffs.filter((diff) => diff.type === types_1.StorageLayoutDiffType.VARIABLE_REMOVED)
+                    .length > 0) ||
+            (failOnLabelDiff &&
+                formattedDiffs.filter((diff) => diff.type === types_1.StorageLayoutDiffType.LABEL)
                     .length > 0))
             throw Error("Unsafe storage layout changes detected. Please see above for details.");
     }
