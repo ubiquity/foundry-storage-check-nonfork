@@ -19,6 +19,10 @@ inputs:
     description: Whether to fail the CI when removing a storage slot (to only allow added or renamed storage slots).
     required: false
     default: false
+  failOnLabelDiff:
+    description: Whether to fail the CI when Label Diff warning occurs.
+    required: false
+    default: false
   token:
     description: The repository's github token.
     default: ${{ github.token }}
